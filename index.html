@@ -1,33 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Item Lookup</title>
+<title>Item Image Lookup</title>
 <style>
     body {
         font-family: Arial, sans-serif;
         text-align: center;
-        padding: 20px;
+        padding: 30px;
+        background: #f5f5f5;
+    }
+    h1 {
+        margin-bottom: 10px;
     }
     img {
         max-width: 90%;
         height: auto;
         margin-top: 20px;
         border: 2px solid #ccc;
-        border-radius: 10px;
+        border-radius: 12px;
+        background: white;
+        padding: 10px;
+    }
+    #status {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
     }
 </style>
 </head>
 
 <body>
 
-<h2>Item Image Lookup</h2>
+<h1>Item Image Lookup</h1>
 <p id="status">Loading...</p>
 <div id="result"></div>
 
 <script>
-// ------------------------
-// 1. Ambil parameter ?code=xxxx
-// ------------------------
+// ------------------------------------------
+// 1. Ambil parameter ?code=XXXX dari URL
+// ------------------------------------------
 function getParameter(name) {
     const url = new URL(window.location.href);
     return url.searchParams.get(name);
@@ -35,20 +46,20 @@ function getParameter(name) {
 
 const scannedCode = getParameter("code");
 
-// Jika tiada parameter, berhenti
+// Kalau tiada code → paparkan mesej
 if (!scannedCode) {
     document.getElementById("status").innerText = "No item code detected.";
     throw new Error("No code found");
 }
 
-// ------------------------
-// 2. URL Google Sheet CSV
-// ------------------------
-const sheetURL = "YOUR_GOOGLE_SHEET_CSV_LINK_HERE";
+// ------------------------------------------
+// 2. Link Google Sheet CSV (SYAHMI PUNYA)
+// ------------------------------------------
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjYWStNCQlxd6IyM__GLO-lsrnWUwuG1q7dfvjkTbSL_A-Y4cvkXfhMsXX04CKxjzdxTGvqSApwIct/pub?output=csv";
 
-// ------------------------
-// 3. Fetch CSV & cari code
-// ------------------------
+// ------------------------------------------
+// 3. Fetch CSV & cari image berdasarkan code
+// ------------------------------------------
 fetch(sheetURL)
     .then(response => response.text())
     .then(csv => {
@@ -63,11 +74,11 @@ fetch(sheetURL)
         });
 
         if (foundImage) {
-            document.getElementById("status").innerText = "Item Found:";
+            document.getElementById("status").innerText = "Item Found: " + scannedCode;
             document.getElementById("result").innerHTML =
                 `<img src="${foundImage}" alt="Item Image"><p>${scannedCode}</p>`;
         } else {
-            document.getElementById("status").innerText = "Item Not Found.";
+            document.getElementById("status").innerText = "Item not found in database.";
         }
     })
     .catch(err => {
