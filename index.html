@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Item Lookup</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+    }
+    img {
+        max-width: 90%;
+        height: auto;
+        margin-top: 20px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<h2>Item Image Lookup</h2>
+<p id="status">Loading...</p>
+<div id="result"></div>
+
+<script>
+// ------------------------
+// 1. Ambil parameter ?code=xxxx
+// ------------------------
+function getParameter(name) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(name);
+}
+
+const scannedCode = getParameter("code");
+
+// Jika tiada parameter, berhenti
+if (!scannedCode) {
+    document.getElementById("status").innerText = "No item code detected.";
+    throw new Error("No code found");
+}
+
+// ------------------------
+// 2. URL Google Sheet CSV
+// ------------------------
+const sheetURL = "YOUR_GOOGLE_SHEET_CSV_LINK_HERE";
+
+// ------------------------
+// 3. Fetch CSV & cari code
+// ------------------------
+fetch(sheetURL)
+    .then(response => response.text())
+    .then(csv => {
+        const rows = csv.split("\n").map(r => r.split(","));
+
+        let foundImage = null;
+
+        rows.forEach(row => {
+            if (row[0].trim() === scannedCode.trim()) {
+                foundImage = row[1].trim();
+            }
+        });
+
+        if (foundImage) {
+            document.getElementById("status").innerText = "Item Found:";
+            document.getElementById("result").innerHTML =
+                `<img src="${foundImage}" alt="Item Image"><p>${scannedCode}</p>`;
+        } else {
+            document.getElementById("status").innerText = "Item Not Found.";
+        }
+    })
+    .catch(err => {
+        document.getElementById("status").innerText = "Error loading data.";
+        console.error(err);
+    });
+</script>
+
+</body>
+</html>
