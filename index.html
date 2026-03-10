@@ -36,9 +36,6 @@
 <div id="result"></div>
 
 <script>
-// ------------------------------------------
-// Get ?code=xxxx from URL
-// ------------------------------------------
 function getParameter(name) {
     const url = new URL(window.location.href);
     return url.searchParams.get(name);
@@ -51,14 +48,8 @@ if (!scannedCode) {
     throw new Error("No code found");
 }
 
-// ------------------------------------------
-// Google Sheet CSV (Syahmi)
-// ------------------------------------------
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjYWStNCQlxd6IyM__GLO-lsrnWUwuG1q7dfvjkTbSL_A-Y4cvkXfhMsXX04CKxjzdxTGvqSApwIct/pub?output=csv";
 
-// ------------------------------------------
-// Fetch CSV & match code
-// ------------------------------------------
 fetch(sheetURL)
     .then(response => response.text())
     .then(csv => {
@@ -74,7 +65,6 @@ fetch(sheetURL)
         if (foundImage) {
             document.getElementById("status").innerText = "Item Found: " + scannedCode;
 
-            //  *** INI PART PALING PENTING ***
             document.getElementById("result").innerHTML = `
                 <img src="${foundImage}" alt="Item Image">
                 <p>${scannedCode}</p>
