@@ -36,9 +36,6 @@
 <div id="result"></div>
 
 <script>
-// ------------------------------------------
-// 1. Ambil parameter ?code=XXXX dari URL
-// ------------------------------------------
 function getParameter(name) {
     const url = new URL(window.location.href);
     return url.searchParams.get(name);
@@ -46,25 +43,17 @@ function getParameter(name) {
 
 const scannedCode = getParameter("code");
 
-// Kalau tiada code → paparkan mesej
 if (!scannedCode) {
     document.getElementById("status").innerText = "No item code detected.";
     throw new Error("No code found");
 }
 
-// ------------------------------------------
-// 2. Link Google Sheet CSV (SYAHMI PUNYA)
-// ------------------------------------------
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjYWStNCQlxd6IyM__GLO-lsrnWUwuG1q7dfvjkTbSL_A-Y4cvkXfhMsXX04CKxjzdxTGvqSApwIct/pub?output=csv";
 
-// ------------------------------------------
-// 3. Fetch CSV & cari image berdasarkan code
-// ------------------------------------------
 fetch(sheetURL)
     .then(response => response.text())
     .then(csv => {
         const rows = csv.split("\n").map(r => r.split(","));
-
         let foundImage = null;
 
         rows.forEach(row => {
@@ -76,7 +65,7 @@ fetch(sheetURL)
         if (foundImage) {
             document.getElementById("status").innerText = "Item Found: " + scannedCode;
             document.getElementById("result").innerHTML =
-                `<img src="${foundImage}" alt="Item Image"><p>${scannedCode}</p>`;
+                `<img src="${foundImage}" alt="Item Image" /><p>${scannedCode}</p>`;
         } else {
             document.getElementById("status").innerText = "Item not found in database.";
         }
