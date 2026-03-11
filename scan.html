@@ -4,7 +4,8 @@
 <title>QR Scanner - Item Lookup</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://unpkg.com/html5-qrcode"></script>
+<!-- html5-qrcode (FREE) -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
 <style>
     body {
@@ -40,6 +41,10 @@
         background: #1e88e5;
     }
 
+    #result-text {
+        font-size: 20px;
+        margin-top: 20px;
+    }
 </style>
 
 </head>
@@ -47,9 +52,12 @@
 
 <h1>Scan Item QR</h1>
 
+<!-- Button -->
 <button onclick="startScanner()">SCAN QR</button>
 
 <div id="scanner"></div>
+
+<p id="result-text"></p>
 
 <script>
 function startScanner() {
@@ -64,21 +72,20 @@ function startScanner() {
             qrbox: { width: 250, height: 250 }
         },
         qrMessage => {
-
-            // Vibrate phone when QR detected
-            if (navigator.vibrate) {
-                navigator.vibrate(100);
-            }
-
-            // Redirect to image page
+            // qrMessage = item code from ERP e.g. 14000555
             const scannedCode = qrMessage.trim();
+
+            // Redirect to item lookup page
             window.location.href =
-                "https://blockbinventory-del.github.io/qr-item-viewer/?code="
-                + scannedCode;
+              "https://blockbinventory-del.github.io/qr-item-viewer/?code=" 
+              + scannedCode;
         },
-        errorMessage => {}
+        errorMessage => {
+            // ignore scanning errors
+        }
     ).catch(err => {
-        alert("Camera error: " + err);
+        document.getElementById("result-text").innerText =
+            "Camera error: " + err;
     });
 }
 </script>
