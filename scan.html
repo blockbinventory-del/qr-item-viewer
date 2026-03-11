@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>QR Scanner - Item Lookup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- html5-qrcode (FREE) -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    #scanner {
+        width: 300px;
+        margin: auto;
+        display: none;
+    }
+
+    button {
+        padding: 15px 30px;
+        font-size: 18px;
+        border-radius: 8px;
+        border: none;
+        background: #2196F3;
+        color: white;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    button:hover {
+        background: #1e88e5;
+    }
+
+    #result-text {
+        font-size: 20px;
+        margin-top: 20px;
+    }
+</style>
+
+</head>
+<body>
+
+<h1>Scan Item QR</h1>
+
+<!-- Button -->
+<button onclick="startScanner()">SCAN QR</button>
+
+<div id="scanner"></div>
+
+<p id="result-text"></p>
+
+<script>
+function startScanner() {
+    document.getElementById("scanner").style.display = "block";
+
+    const html5QrCode = new Html5Qrcode("scanner");
+
+    html5QrCode.start(
+        { facingMode: "environment" },
+        {
+            fps: 10,
+            qrbox: { width: 250, height: 250 }
+        },
+        qrMessage => {
+            // qrMessage = item code from ERP e.g. 14000555
+            const scannedCode = qrMessage.trim();
+
+            // Redirect to item lookup page
+            window.location.href =
+              "https://blockbinventory-del.github.io/qr-item-viewer/?code=" 
+              + scannedCode;
+        },
+        errorMessage => {
+            // ignore scanning errors
+        }
+    ).catch(err => {
+        document.getElementById("result-text").innerText =
+            "Camera error: " + err;
+    });
+}
+</script>
+
+</body>
+</html>
